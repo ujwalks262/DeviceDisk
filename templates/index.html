@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+    <h1>DeviceDesk - Employee Portal</h1>
+    <a href="/logout">Logout</a>
+</header>
+
+<main>
+    <h2>Welcome, {{session.user}}</h2>
+
+    <section class="panel">
+        <h2>Raise Support Ticket</h2>
+
+        <form action="/add" method="POST">
+            <input name="device" placeholder="Device Name" required>
+
+            <textarea name="issue"
+                placeholder="Describe your technical issue"
+                required></textarea>
+
+            <label>Priority</label>
+            <select name="priority">
+                <option>Low</option>
+                <option selected>Medium</option>
+                <option>High</option>
+            </select>
+
+            <button type="submit">Submit Ticket</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>My Support Tickets</h2>
+
+        <div class="table-wrap">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Device</th>
+                <th>Issue</th>
+                <th>Priority</th>
+                <th>Status</th>
+            </tr>
+
+            {% for t in tickets %}
+            <tr>
+                <td>{{t.id}}</td>
+                <td>{{t.device}}</td>
+                <td>{{t.issue}}</td>
+                <td>{{t.priority}}</td>
+                <td><span class="status">{{t.status}}</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No tickets submitted yet.</td></tr>
+            {% endfor %}
+        </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>My Assigned Devices</h2>
+        {% for d in devices %}
+            <p>{{d.device}} — {{d.asset_tag}}</p>
+        {% else %}
+            <p>No devices assigned yet.</p>
+        {% endfor %}
+    </section>
+</main>
+
+</body>
+</html>

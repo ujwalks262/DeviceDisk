@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DeviceDesk Admin</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+    <h1>DeviceDesk - Admin Dashboard</h1>
+    <a href="/logout">Logout</a>
+</header>
+
+<main>
+    <h2>Overview</h2>
+
+    <section class="cards">
+        <div class="card">
+            <p>Total Tickets</p>
+            <h2>{{stats.total}}</h2>
+        </div>
+        <div class="card">
+            <p>Open Tickets</p>
+            <h2>{{stats.open}}</h2>
+        </div>
+        <div class="card">
+            <p>In Progress</p>
+            <h2>{{stats.progress}}</h2>
+        </div>
+        <div class="card">
+            <p>Resolved</p>
+            <h2>{{stats.resolved}}</h2>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Manage Support Tickets</h2>
+
+        <form method="GET" action="/admin">
+            <input name="search" value="{{search}}"
+                   placeholder="Search employee">
+            <select name="status">
+                <option value="">All Statuses</option>
+                <option value="Open"
+                    {% if selected_status == 'Open' %}selected{% endif %}>
+                    Open
+                </option>
+                <option value="In Progress"
+                    {% if selected_status == 'In Progress' %}selected{% endif %}>
+                    In Progress
+                </option>
+                <option value="Resolved"
+                    {% if selected_status == 'Resolved' %}selected{% endif %}>
+                    Resolved
+                </option>
+            </select>
+            <button>Search</button>
+            <a href="/admin">Clear</a>
+        </form>
+
+        <div class="table-wrap">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Employee</th>
+                <th>Device</th>
+                <th>Issue</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+            {% for t in tickets %}
+            <tr>
+                <td>{{t.id}}</td>
+                <td>{{t.name}}</td>
+                <td>{{t.device}}</td>
+                <td>{{t.issue}}</td>
+                <td>{{t.priority}}</td>
+                <td>{{t.status}}</td>
+                <td>
+                    <form action="/update/{{t.id}}" method="POST">
+                        <select name="status">
+                            <option {% if t.status == 'Open' %}selected{% endif %}>Open</option>
+                            <option {% if t.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                            <option {% if t.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                        </select>
+                        <button>Update</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7">No tickets available.</td></tr>
+            {% endfor %}
+        </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Register IT Device</h2>
+
+        <form action="/device" method="POST">
+            <input name="employee" placeholder="Employee Username" required>
+            <input name="device" placeholder="Device Name" required>
+            <input name="asset_tag" placeholder="Asset Tag" required>
+            <button type="submit">Register Device</button>
+        </form>
+
+        <h3>Registered Devices</h3>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Employee</th>
+                <th>Device</th>
+                <th>Asset Tag</th>
+            </tr>
+            {% for d in devices %}
+            <tr>
+                <td>{{d.id}}</td>
+                <td>{{d.employee}}</td>
+                <td>{{d.device}}</td>
+                <td>{{d.asset_tag}}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4">No devices registered.</td></tr>
+            {% endfor %}
+        </table>
+    </section>
+</main>
+
+</body>
+</html>
